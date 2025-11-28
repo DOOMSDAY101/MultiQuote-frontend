@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { httpInterceptorProviders } from './auth.interceptor';
 
 
 @Injectable({
@@ -26,7 +27,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
         AppRoutingModule,
 
     ],
-    providers: [provideAnimationsAsync()],
+    providers: [httpInterceptorProviders, provideAnimationsAsync()],
 
     bootstrap: [AppComponent],
 })
