@@ -1,0 +1,6 @@
+<button [type]="type" class="btn" [ngClass]="{ 'w-100': fullWidth }" [disabled]="loading || disabled"
+    [ngStyle]="{ 'background-color': color, 'color': textColor }">
+
+    <span *ngIf="!loading">{{ text }}</span>
+    <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status"></div>
+</button>

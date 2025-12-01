@@ -11,6 +11,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { httpInterceptorProviders } from './auth.interceptor';
 import { AuthenticationModule } from './modules/authentication/authentication.module';
 import { ToastrModule } from 'ngx-toastr';
+import { SharedModule } from './shared/shared.module';
 
 
 @Injectable({
@@ -35,7 +36,7 @@ import { ToastrModule } from 'ngx-toastr';
         }),
         AppRoutingModule,
         AuthenticationModule,
-
+        SharedModule
     ],
     providers: [httpInterceptorProviders, provideAnimationsAsync()],
 

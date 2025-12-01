@@ -109,13 +109,13 @@ export class ApiService {
             .pipe(catchError(this.handleError<any>('login')));
     }
 
-    //   verifyAdminLoginCode(code: string) {
-    //     return this.post<any>('/auth/verify-admin-login-code', { code }, false);
-    //   }
+    verifyCode(email: string, code: string) {
+        return this.post<any>('/auth/verify-login-code', { email, code }, false);
+    }
 
-    //   resendAdminCode(email: string) {
-    //     return this.post<any>('/auth/resend-admin-code', { email }, false);
-    //   }
+    resendCode(email: string) {
+        return this.post<any>('/auth/resend-code', { email }, false);
+    }
     //   getDashboardStats(params?: any): Observable<any> {
     //     const url = `${this.baseUrl}/admin/dashboard/`;
     //     return this.http

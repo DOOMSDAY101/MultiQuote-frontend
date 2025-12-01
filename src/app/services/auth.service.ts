@@ -12,6 +12,7 @@ export class AuthService {
     private readonly REFRESH_TOKEN = "REFRESH_TOKEN";
     private readonly USER_ID = "USER_ID";
     private readonly ADMIN = "ADMIN";
+    private readonly USER = "USER";
 
     constructor(private router: Router) { }
 
@@ -43,6 +44,11 @@ export class AuthService {
         const admin = localStorage.getItem(this.ADMIN);
         return admin ? JSON.parse(admin) : null;
     }
+    getUser() {
+        const user = localStorage.getItem(this.USER);
+        return user ? JSON.parse(user) : null;
+    }
+
 
     storeJwtToken(jwt: string) {
         localStorage.setItem(this.JWT_TOKEN, jwt);
@@ -58,6 +64,10 @@ export class AuthService {
 
     storeAdmin(admin: any) {
         localStorage.setItem(this.ADMIN, JSON.stringify(admin)); // Store entire admin object
+    }
+
+    storeUser(user: any) {
+        localStorage.setItem(this.USER, JSON.stringify(user)); // Store entire user object
     }
 
     deleteTokens() {
