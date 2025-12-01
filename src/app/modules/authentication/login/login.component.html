@@ -1,0 +1,54 @@
+<div class="container-fluid d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4" style="width: 350px;">
+        <h2 class="text-center mb-2">Welcome back!</h2>
+        <p class="text-center text-muted mb-4">Login to continue</p>
+
+        <!-- Step 1: Login -->
+        <form *ngIf="step === 'login'" [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label">Email Address:</label>
+                <input type="email" class="form-control" placeholder="Enter your email" formControlName="email"
+                    required>
+            </div>
+
+            <!-- Password with eye icon -->
+            <div class="mb-3 position-relative">
+                <label class="form-label">Password: </label>
+                <input [type]="hidePassword ? 'password' : 'text'" class="form-control"
+                    placeholder="Enter your password" formControlName="password" required>
+                <i class="fa-solid" [class.fa-eye]="hidePassword" [class.fa-eye-slash]="!hidePassword"
+                    (click)="togglePassword()" style="right: 10px; top: 38px; cursor: pointer; position: absolute;">
+                </i>
+            </div>
+
+            <!-- Button -->
+            <button type="submit" class="btn w-100" style="background-color: #061023; color: white;">
+                Continue
+            </button>
+        </form>
+
+        <!-- Step 2: Verification -->
+        <form *ngIf="step === 'verification'" [formGroup]="verificationForm" (ngSubmit)="submitVerification()">
+            <h2 class="text-center mb-2">Verification Required</h2>
+            <p class="text-center text-muted mb-4">{{ verificationMessage }}</p>
+
+            <div class="mb-3">
+                <label class="form-label">Verification Code</label>
+                <input type="text" class="form-control" formControlName="code" placeholder="Enter code">
+            </div>
+
+            <button type="submit" class="btn w-100 mb-2" style="background-color: #061023; color: white;">
+                Verify
+            </button>
+
+            <button type="button" class="btn btn-secondary w-100 mb-2" (click)="backToLogin()">
+                Back
+            </button>
+
+            <button type="button" class="btn btn-link w-100" (click)="resendCode()">
+                Resend Code
+            </button>
+        </form>
+    </div>
+</div>
