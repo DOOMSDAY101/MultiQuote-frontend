@@ -99,17 +99,15 @@ export class ApiService {
             .pipe(catchError(this.handleError<any>('refreshToken')));
     }
 
-    // login(username: string, password: string): Observable<any> {
-    //     const url = `${this.baseUrl}/auth/admin/login`;
-    //     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    //     const body = { email: username, password };
+    login(email: string, password: string): Observable<any> {
+        const url = `${this.baseUrl}/auth/login`;
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        const body = { email, password };
 
-    //     console.log(body);
-
-    //     return this.http
-    //       .post<any>(url, body, { headers })
-    //       .pipe(catchError(this.handleError<any>('login')));
-    //   }
+        return this.http
+            .post<any>(url, body, { headers })
+            .pipe(catchError(this.handleError<any>('login')));
+    }
 
     //   verifyAdminLoginCode(code: string) {
     //     return this.post<any>('/auth/verify-admin-login-code', { code }, false);

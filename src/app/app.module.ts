@@ -9,6 +9,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { httpInterceptorProviders } from './auth.interceptor';
+import { AuthenticationModule } from './modules/authentication/authentication.module';
+import { ToastrModule } from 'ngx-toastr';
 
 
 @Injectable({
@@ -24,7 +26,15 @@ import { httpInterceptorProviders } from './auth.interceptor';
         HttpClientModule,
         ReactiveFormsModule,
         BrowserAnimationsModule,
+        ToastrModule.forRoot({
+            positionClass: 'toast-top-right',
+            timeOut: 5000,
+            closeButton: true,
+            progressBar: true
+
+        }),
         AppRoutingModule,
+        AuthenticationModule,
 
     ],
     providers: [httpInterceptorProviders, provideAnimationsAsync()],
