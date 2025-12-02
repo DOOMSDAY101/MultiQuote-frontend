@@ -12,6 +12,7 @@ import { httpInterceptorProviders } from './auth.interceptor';
 import { AuthenticationModule } from './modules/authentication/authentication.module';
 import { ToastrModule } from 'ngx-toastr';
 import { SharedModule } from './shared/shared.module';
+import { LayoutModule } from './modules/layout/layout.module';
 
 
 @Injectable({
@@ -36,7 +37,8 @@ import { SharedModule } from './shared/shared.module';
         }),
         AppRoutingModule,
         AuthenticationModule,
-        SharedModule
+        SharedModule,
+        LayoutModule
     ],
     providers: [httpInterceptorProviders, provideAnimationsAsync()],
 

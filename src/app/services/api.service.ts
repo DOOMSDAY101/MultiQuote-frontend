@@ -116,6 +116,17 @@ export class ApiService {
     resendCode(email: string) {
         return this.post<any>('/auth/resend-code', { email }, false);
     }
+    verifyToken(): Observable<any> {
+        return this.get<any>('/auth/me', true).pipe(
+            catchError((err) => {
+                // If refresh failed, delete tokens
+                if (err.status === 401 || err.status === 403) {
+                    this.authService.deleteTokens();
+                }
+                return throwError(() => err);
+            })
+        );
+    }
     //   getDashboardStats(params?: any): Observable<any> {
     //     const url = `${this.baseUrl}/admin/dashboard/`;
     //     return this.http

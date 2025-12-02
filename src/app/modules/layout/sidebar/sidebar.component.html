@@ -1,0 +1,24 @@
+<nav class="d-flex flex-column flex-shrink-0 p-3 bg-white vh-100 sidebar-shadow" style="width: 220px;">
+    <!-- <a class="navbar-brand mb-3" routerLink="/dashboard">MyApp</a> -->
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item position-relative">
+            <a class="nav-link d-flex align-items-center" routerLink="/dashboard" routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: true }">
+                <i class="fas fa-home me-2"></i> Home
+            </a>
+            <div *ngIf="isActive('/dashboard')" class="active-indicator"></div>
+        </li>
+        <li class="nav-item position-relative">
+            <a class="nav-link d-flex align-items-center" routerLink="/settings" routerLinkActive="active-link">
+                <i class="fas fa-cog me-2"></i> Settings
+            </a>
+            <div *ngIf="isActive('/settings')" class="active-indicator"></div>
+        </li>
+        <li class="nav-item position-relative">
+            <a class="nav-link d-flex align-items-center" routerLink="/profile" routerLinkActive="active-link">
+                <i class="fas fa-user me-2"></i> Profile
+            </a>
+            <div *ngIf="isActive('/profile')" class="active-indicator"></div>
+        </li>
+    </ul>
+</nav>

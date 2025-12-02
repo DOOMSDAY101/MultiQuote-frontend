@@ -1,0 +1,14 @@
+.full-width-header {
+  width: 100%;        
+  height: 70px;      
+  background-color: #0A0A0A;
+  display: flex;        
+  justify-content: center; 
+  align-items: center;    
+}
+
+.welcome-text {
+  font-size: 2rem;       
+  font-weight: 300;    
+  text-align: center;   
+}

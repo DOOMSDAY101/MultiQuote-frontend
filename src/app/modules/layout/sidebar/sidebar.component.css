@@ -1,0 +1,33 @@
+/* Minimal box shadow for sidebar */
+.sidebar-shadow {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Link styles */
+.nav-link {
+  color: #333;
+  font-weight: 500;
+  position: relative;
+}
+
+.nav-link:hover {
+  background-color: #f8f9fa;
+  color: #000;
+}
+
+/* Active indicator bar */
+.active-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #000000;
+  border-radius: 2px;
+}
+
+/* Active link color */
+.active-link {
+  background-color: #f1f1f1;
+  color: #000 !important;
+}

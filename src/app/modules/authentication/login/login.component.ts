@@ -111,7 +111,7 @@ export class LoginComponent {
         this.toastr.success('You are now logged in!', 'Verified');
 
         // Redirect to dashboard
-        // this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isVerifying = false;
