@@ -1,9 +1,73 @@
-/* Minimal box shadow for sidebar */
+/* Sidebar general styling */
+.sidebar {
+  width: 220px;
+  /* height: calc(100vh - 70px); */
+  height: 100vh;
+  position: relative;
+  /* top: 70px; */
+  top: 0;
+  left: 0;
+  background: white;
+  transition: transform 0.3s ease-in-out;
+  z-index: 2000;
+  overflow-y: auto;
+
+}
+
+.sidebar .nav-item {
+  margin-bottom: 12px;
+}
+
+/* Desktop: sidebar is always visible */
+@media (min-width: 992px) {
+  .sidebar {
+    transform: translateX(0);
+  }
+}
+
+/* Mobile: sidebar starts hidden */
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+    position: absolute;
+    top: 70px;
+    left: 0;
+    height: 100vh
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Overlay for mobile */
+.sidebar-overlay {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1500;
+}
+
+/* Hamburger icon */
+.hamburger-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: black;
+  /* change to white if placed on dark background */
+  cursor: pointer;
+  margin: 10px;
+}
+
+/* Box shadow */
 .sidebar-shadow {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Link styles */
+/* Navigation styling */
 .nav-link {
   color: #333;
   font-weight: 500;
@@ -15,19 +79,26 @@
   color: #000;
 }
 
-/* Active indicator bar */
+/* Active indicator */
 .active-indicator {
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
   width: 4px;
-  background-color: #000000;
+  background-color: #000;
   border-radius: 2px;
 }
 
-/* Active link color */
+/* Active link */
 .active-link {
   background-color: #f1f1f1;
   color: #000 !important;
+}
+
+
+html.no-scroll,
+body.no-scroll {
+  overflow: hidden !important;
+  height: 100vh;
 }
