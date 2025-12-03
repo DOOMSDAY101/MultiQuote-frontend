@@ -1,8 +1,12 @@
 <div class="full-width-header d-flex justify-content-center align-items-center">
     <h1 class="welcome-text text-white">
-        Welcome
-        <span *ngIf="userName">&nbsp;{{ userName }}</span>
-        👋
-    </h1>
+        <ng-container *ngIf="currentRouteName; else welcomeMessage">
+            {{ currentRouteName }}
+        </ng-container>
 
+        <!-- Otherwise show welcome message -->
+        <ng-template #welcomeMessage>
+            Welcome <span *ngIf="userName">&nbsp;{{ userName }}</span> 👋
+        </ng-template>
+    </h1>
 </div>

@@ -1,0 +1,148 @@
+<div class="container-fluid py-3">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>User Management</h2>
+        <button class="btn btn-primary" style="background-color: #061023; border-color: #061023;" (click)="addUser()">
+            <i class="fas fa-plus me-2"></i> Add User
+        </button>
+    </div>
+
+    <!-- Search input -->
+    <div class="mb-3">
+        <input type="text" class="form-control" placeholder="Search by name or email" [(ngModel)]="searchTerm"
+            (input)="searchUsers()" />
+    </div>
+
+    <!-- User table -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Avatar</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of paginatedUsers">
+                    <td>
+                        <img [src]="user.img || 'https://via.placeholder.com/40'" class="rounded-circle" width="40"
+                            height="40" alt="avatar" />
+                    </td>
+                    <td>{{ user.firstName }} {{ user.lastName }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ (user.role | titlecase).replace('_', ' ') }}</td>
+                    <td>
+                        <span class="status-pill" [ngClass]="{
+      'active-status': user.status === 'Active',
+      'inactive-status': user.status === 'Inactive'
+    }">
+                            {{ user.status }}
+                        </span>
+                    </td>
+                    <td class="text-end action-buttons">
+                        <button class="action-btn view" (click)="viewUser(user)" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn edit" (click)="editUser(user)" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete" (click)="deleteUser(user)" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+
+                </tr>
+                <tr *ngIf="paginatedUsers.length === 0">
+                    <td colspan="6" class="text-center text-muted">
+                        No users found.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination Controls -->
+    </div>
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+        <div class="mb-2 mb-md-0">
+            Page {{ currentPage }} of {{ totalPages }}
+        </div>
+        <nav>
+            <ul class="pagination mb-0">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                    <button class="page-link" (click)="previousPage()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </li>
+                <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+                    [class.active]="currentPage === i + 1">
+                    <button class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</button>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                    <button class="page-link" (click)="nextPage()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+
+
+<!-- User Detail Modal -->
+<div class="modal fade right-modal" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slide modal-dialog-scrollable modal-fullscreen-md-down">
+        <div class="modal-content h-100">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title" id="userDetailModalLabel">User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body d-flex flex-column align-items-center text-center overflow-auto">
+                <!-- Avatar -->
+                <img [src]="selectedUser?.img || 'https://via.placeholder.com/80'" class="rounded-circle mb-3"
+                    width="80" height="80" alt="avatar" />
+
+                <div class="user-info w-100 px-3 text-start">
+                    <p><strong>Full Name:</strong> {{ selectedUser?.firstName ?? 'Not provided' }} {{
+                        selectedUser?.lastName ?? '' }}</p>
+                    <p><strong>Email:</strong> {{ selectedUser?.email ?? 'Not provided' }}</p>
+                    <p><strong>Phone:</strong> {{ selectedUser?.phoneNumber ?? 'Not provided' }}</p>
+                    <p><strong>Role:</strong> {{ ((selectedUser?.role ?? '') | titlecase).replace('_', ' ') || 'Not
+                        provided' }}</p>
+                    <p>
+                        <strong>Status:</strong>
+                        <span class="status-pill" [ngClass]="{
+                          'active-status': selectedUser?.status === 'Active',
+                          'inactive-status': selectedUser?.status === 'Inactive'
+                        }">
+                            {{ selectedUser?.status ?? 'Not provided' }}
+                        </span>
+                    </p>
+
+                    <!-- Signature -->
+                    <div *ngIf="selectedUser?.signature; else noSignature" class="mt-3">
+                        <p><strong>Signature:</strong></p>
+                        <img [src]="selectedUser?.signature" class="img-fluid rounded" alt="signature" />
+                    </div>
+                    <ng-template #noSignature>
+                        <p class="text-muted"><strong>Signature:</strong> Not provided</p>
+                    </ng-template>
+
+                    <!-- ID and timestamps -->
+                    <p class="mt-3"><strong>User ID:</strong> {{ selectedUser?.id ?? 'Not provided' }}</p>
+                    <p><strong>Created At:</strong> {{ selectedUser?.createdAt ? (selectedUser?.createdAt |
+                        date:'medium') : 'Not provided' }}</p>
+                    <p><strong>Updated At:</strong> {{ selectedUser?.updatedAt ? (selectedUser?.updatedAt |
+                        date:'medium') : 'Not provided' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

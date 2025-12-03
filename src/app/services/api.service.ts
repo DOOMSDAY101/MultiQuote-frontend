@@ -9,6 +9,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
+import { PaginatedUsers } from '../models/user.model';
 
 @Injectable({
     providedIn: 'root',
@@ -127,6 +128,25 @@ export class ApiService {
             })
         );
     }
+
+    getUsers(
+        page: number = 1,
+        limit: number = 10,
+        search?: string,
+        role?: string,
+        status?: string
+    ): Observable<PaginatedUsers> {
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('limit', limit.toString());
+
+        if (search) params = params.set('search', search);
+        if (role) params = params.set('role', role);
+        if (status) params = params.set('status', status);
+
+        return this.get<PaginatedUsers>('/users', true, params);
+    }
+
     //   getDashboardStats(params?: any): Observable<any> {
     //     const url = `${this.baseUrl}/admin/dashboard/`;
     //     return this.http

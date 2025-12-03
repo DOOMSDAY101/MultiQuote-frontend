@@ -2,6 +2,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { LayoutComponent } from './modules/layout/layout/layout.component';
 import { AuthGuard } from './services/authGuard.service';
+import { AdminGuard } from './services/adminGuard.service';
 
 const routes: Routes = [
     {
@@ -19,14 +20,20 @@ const routes: Routes = [
     {
         path: '',
         component: LayoutComponent,
-        canActivate: [AuthGuard],
         children: [
             {
                 path: 'dashboard',
                 loadChildren: () =>
-                    import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
+                    import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule),
+                canActivate: [AuthGuard],
+
             },
-            // add more protected pages here (settings, users, etc)
+            {
+                path: 'user-management',
+                loadChildren: () =>
+                    import('./modules/user-management/user-management.module').then(m => m.UserManagementModule),
+                canActivate: [AdminGuard]
+            },
         ]
     },
     // {
