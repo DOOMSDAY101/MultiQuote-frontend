@@ -26,16 +26,20 @@ export class ApiService {
     ) { }
 
     // ========= HELPERS =========
-    private getHeaders(auth: boolean = true): HttpHeaders {
-        const headersConfig: { [key: string]: string } = {
-            'Content-Type': 'application/json',
-        };
-        if (auth)
-            headersConfig[
-                'Authorization'
-            ] = `Bearer ${this.authService.getJwtToken()}`;
+    private getHeaders(auth: boolean = true, isJson: boolean = true): HttpHeaders {
+        const headersConfig: { [key: string]: string } = {};
+
+        if (isJson) {
+            headersConfig['Content-Type'] = 'application/json';
+        }
+
+        if (auth) {
+            headersConfig['Authorization'] = `Bearer ${this.authService.getJwtToken()}`;
+        }
+
         return new HttpHeaders(headersConfig);
     }
+
 
     private get<T>(endpoint: string, auth = true, params?: any): Observable<T> {
         return this.http
@@ -145,6 +149,34 @@ export class ApiService {
         if (status) params = params.set('status', status);
 
         return this.get<PaginatedUsers>('/users', true, params);
+    }
+    createUser(userData: {
+        firstName: string;
+        lastName: string;
+        email: string;
+        phoneNumber?: string;
+        role?: string;
+        imgFile?: File;
+        signatureFile?: File;
+    }): Observable<any> {
+        const formData = new FormData();
+
+        // Dynamically append each property
+        Object.entries(userData).forEach(([key, value]) => {
+            if (value) {
+                // For files, append as is
+                if (value instanceof File) {
+                    formData.append(key, value);
+                } else {
+                    // For text values
+                    formData.append(key, value.toString());
+                }
+            }
+        });
+
+        return this.http.post<any>(`${this.baseUrl}/auth/create-user`, formData, {
+            headers: this.getHeaders(true, false), // auth headers
+        }).pipe(catchError(this.handleError<any>('createUser')));
     }
 
     //   getDashboardStats(params?: any): Observable<any> {

@@ -150,3 +150,62 @@
 .modal-dialog-slide {
     max-width: 400px;
 }
+
+@media (max-width: 768px) {
+    table thead {
+        display: none;
+        /* hide column headers */
+    }
+
+    table tbody tr {
+        display: block;
+        margin-bottom: 12px;
+        background: #fff;
+        padding: 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 4px;
+        border: none;
+    }
+
+    table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #666;
+    }
+
+    /* Action buttons centered */
+    .action-buttons {
+        text-align: center;
+    }
+
+    .header-row {
+        flex-wrap: wrap;
+        /* allows slight wrapping if needed but usually stays side-by-side */
+    }
+
+    /* Make title smaller */
+    .header-row h2 {
+        font-size: 1.2rem;
+        /* smaller but still readable */
+        margin: 0;
+    }
+
+    /* Make button smaller */
+    .header-row button {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        /* prevent breaking "Add User" */
+    }
+
+    .header-row button i {
+        font-size: 0.8rem;
+        margin-right: 4px !important;
+    }
+}

@@ -1,0 +1,28 @@
+/* Entire page fills the screen */
+.layout-wrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Body (sidebar + content) fills remaining space */
+.layout-body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    /* IMPORTANT to prevent overflow */
+}
+
+/* Content should stretch correctly */
+.layout-content {
+    overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+    .layout-content {
+        flex-grow: 1;
+        padding: 1rem;
+        background-color: #f8f9fa;
+    }
+
+}

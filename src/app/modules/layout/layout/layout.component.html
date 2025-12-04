@@ -1,20 +1,20 @@
-<!-- <div class="layout">
+<!-- <app-header></app-header>
+<div class="d-flex">
     <app-sidebar></app-sidebar>
 
-    <div class="main-content">
-        <app-header></app-header>
-
+    <div class="flex-grow-1 p-3 bg-light" style="min-height: 100vh;">
         <router-outlet></router-outlet>
     </div>
 </div> -->
 
-<app-header></app-header>
-<div class="d-flex">
-    <!-- Sidebar component -->
-    <app-sidebar></app-sidebar>
+<div class="layout-wrapper">
+    <app-header></app-header>
 
-    <!-- Main content -->
-    <div class="flex-grow-1 p-3 bg-light" style="min-height: 100vh;">
-        <router-outlet></router-outlet>
+    <div class="layout-body">
+        <app-sidebar></app-sidebar>
+
+        <div class="layout-content">
+            <router-outlet></router-outlet>
+        </div>
     </div>
 </div>

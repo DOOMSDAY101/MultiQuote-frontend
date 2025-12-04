@@ -2,7 +2,7 @@
 .sidebar {
   width: 250px;
   /* height: calc(100vh - 70px); */
-  height: 100vh;
+  height: 100%;
   position: relative;
   /* top: 70px; */
   top: 0;
@@ -23,6 +23,7 @@
   .sidebar {
     transform: translateX(0);
   }
+
 }
 
 /* Mobile: sidebar starts hidden */
