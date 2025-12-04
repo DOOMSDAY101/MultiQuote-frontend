@@ -11,6 +11,10 @@ import { Modal } from 'bootstrap';
   standalone: false,
 })
 export class UserManagementComponent implements OnInit {
+
+  loadingUsers: boolean = true;
+
+
   users: User[] = [];
   filteredUsers: User[] = [];
   searchTerm: string = '';
@@ -33,6 +37,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   loadUsers() {
+    this.loadingUsers = true;
     this.apiService.getUsers(this.currentPage, this.itemsPerPage, this.searchTerm).subscribe({
       next: (res: PaginatedUsers) => {
         this.users = res.users;
@@ -44,6 +49,7 @@ export class UserManagementComponent implements OnInit {
         }
 
         this.updatePagination();
+        this.loadingUsers = false;
       },
       error: (err) => {
         console.error('Error fetching users:', err)
@@ -57,6 +63,8 @@ export class UserManagementComponent implements OnInit {
         this.filteredUsers = [];
         this.paginatedUsers = [];
         this.totalPages = 0;
+
+        this.loadingUsers = false;
       }
     });
   }

@@ -15,7 +15,8 @@
     </div>
 
     <!-- User table -->
-    <div class="table-responsive">
+    <div class="table-responsive mobile-scroll-wrapper">
+
         <table class="table table-hover align-middle">
             <thead class="table-light">
                 <tr>
@@ -28,15 +29,28 @@
                 </tr>
             </thead>
             <tbody>
+                <ng-container *ngIf="loadingUsers">
+                    <tr *ngFor="let i of [].constructor(itemsPerPage)">
+                        <td><app-shimmer width="40px" height="40px" borderRadius="50%"></app-shimmer></td>
+                        <td><app-shimmer width="120px"></app-shimmer></td>
+                        <td><app-shimmer width="150px"></app-shimmer></td>
+                        <td><app-shimmer width="90px"></app-shimmer></td>
+                        <td><app-shimmer width="70px"></app-shimmer></td>
+                        <td class="text-end">
+                            <app-shimmer width="90px" height="20px"></app-shimmer>
+                        </td>
+                    </tr>
+                </ng-container>
+
                 <tr *ngFor="let user of paginatedUsers">
                     <td data-label="Profile Picture">
                         <img [src]="user.img || 'https://via.placeholder.com/40'" class="rounded-circle" width="40"
                             height="40" alt="avatar" />
                     </td>
-                    <td data-label="Full Name">{{ user.firstName }} {{ user.lastName }}</td>
-                    <td data-label="Email">{{ user.email }}</td>
-                    <td data-label="Role">{{ (user.role | titlecase).replace('_', ' ') }}</td>
-                    <td data-label="Status">
+                    <td data-label="Full Name: "> {{ user.firstName }} {{ user.lastName }}</td>
+                    <td data-label="Email: "> {{ user.email }}</td>
+                    <td data-label="Role: "> {{ (user.role | titlecase).replace('_', ' ') }}</td>
+                    <td data-label="Status: ">
                         <span class="status-pill" [ngClass]="{
       'active-status': user.status === 'Active',
       'inactive-status': user.status === 'Inactive'
@@ -44,7 +58,7 @@
                             {{ user.status }}
                         </span>
                     </td>
-                    <td data-label="Actions" class="text-end action-buttons">
+                    <td data-label="Actions: " class="text-end action-buttons">
                         <button class="action-btn view" (click)="viewUser(user)" title="View">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -115,7 +129,8 @@
                         selectedUser?.lastName ?? '' }}</p>
                     <p><strong>Email:</strong> {{ selectedUser?.email ?? 'Not provided' }}</p>
                     <p><strong>Phone:</strong> {{ selectedUser?.phoneNumber ?? 'Not provided' }}</p>
-                    <p><strong>Role:</strong> {{ ((selectedUser?.role ?? '') | titlecase).replace('_', ' ') || 'Not
+                    <p><strong>Role:</strong> {{ ((selectedUser?.role ?? '') | titlecase).replace('_', ' ') ||
+                        'Not
                         provided' }}</p>
                     <p>
                         <strong>Status: </strong>

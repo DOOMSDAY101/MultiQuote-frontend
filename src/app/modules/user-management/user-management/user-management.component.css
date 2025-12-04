@@ -152,6 +152,7 @@
 }
 
 @media (max-width: 768px) {
+
     table thead {
         display: none;
         /* hide column headers */
@@ -182,6 +183,21 @@
     /* Action buttons centered */
     .action-buttons {
         text-align: center;
+    }
+
+    .mobile-scroll-wrapper {
+        max-height: 60vh;
+        /* You can adjust: 50vh / 65vh / 70vh */
+        overflow-y: auto;
+        overflow-x: hidden;
+        margin-bottom: 12px;
+        margin-top: 20px;
+        /* space above pagination */
+    }
+
+    /* Prevent the entire page from scrolling when scrolling inside */
+    body {
+        overscroll-behavior-y: contain;
     }
 
     .header-row {

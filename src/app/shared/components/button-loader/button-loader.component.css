@@ -1,0 +1,22 @@
+button {
+    position: relative;
+    height: 40px;
+}
+
+:host {
+    display: block;
+    width: 100%;
+}
+
+button.w-100 {
+    width: 100% !important;
+}
+
+button {
+    border: none;
+    transition: 0.3s;
+}
+
+button:hover {
+    opacity: 0.8;
+}
