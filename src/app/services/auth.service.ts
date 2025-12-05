@@ -3,6 +3,14 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 import { Router } from "@angular/router";
+import jwt_decode from 'jwt-decode';
+import { UserRole } from "../models/user.model";
+
+interface JwtPayload {
+    id: string;
+    role: UserRole.SUPER_ADMIN | UserRole.ADMIN | UserRole.USER;
+    login_history_id?: string;
+}
 
 @Injectable({
     providedIn: "root",
@@ -26,6 +34,7 @@ export class AuthService {
     //     })
     //   );
     // }
+
 
     getJwtToken() {
         return localStorage.getItem(this.JWT_TOKEN);
@@ -87,4 +96,33 @@ export class AuthService {
         // Optionally, navigate the user to the login or home page
         this.router.navigate(["/login"]); // Adjust the route as necessary
     }
+
+
+
+    getDecodedToken(): JwtPayload | null {
+        const token = this.getJwtToken();
+        if (!token) return null;
+        try {
+            return jwt_decode<JwtPayload>(token);
+        } catch {
+            return null;
+        }
+    }
+
+    getUserRole(): JwtPayload['role'] | null {
+        return this.getDecodedToken()?.role || null;
+    }
+
+    isSuperAdmin(): boolean {
+        return this.getUserRole() === UserRole.SUPER_ADMIN;
+    }
+
+    isAdmin(): boolean {
+        return this.getUserRole() === UserRole.ADMIN;
+    }
+
+    isUser(): boolean {
+        return this.getUserRole() === UserRole.USER;
+    }
+
 }

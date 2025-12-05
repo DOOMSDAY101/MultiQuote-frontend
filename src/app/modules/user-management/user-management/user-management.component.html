@@ -62,12 +62,29 @@
                         <button class="action-btn view" (click)="viewUser(user)" title="View">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="action-btn edit" (click)="editUser(user)" title="Edit">
+                        <button class="action-btn edit" (click)="editUser(user)" title="Edit"
+                            [disabled]="user.role === 'SUPER_ADMIN' && !authService.isSuperAdmin()"
+                            [ngClass]="{'disabled-btn': user.role === 'SUPER_ADMIN' && !authService.isSuperAdmin()}">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="action-btn delete" (click)="deleteUser(user)" title="Delete">
-                            <i class="fas fa-trash"></i>
+
+                        <button class="action-btn toggle" [title]="
+    user.role === 'SUPER_ADMIN'
+      ? 'Cannot change SUPER_ADMIN status'
+      : (user.status === 'Active' ? 'Deactivate User' : 'Activate User')
+  " (click)="confirmToggleStatus(user)" [disabled]="user.role === 'SUPER_ADMIN'"
+                            [ngClass]="{ 'disabled-btn': user.role === 'SUPER_ADMIN' }">
+                            <i class="fas" [ngClass]="{
+      'fa-toggle-on': user.status === 'Active',
+      'fa-toggle-off': user.status === 'Inactive',
+      'text-success': user.status === 'Active' && user.role !== 'SUPER_ADMIN',
+      'text-danger': user.status === 'Inactive' && user.role !== 'SUPER_ADMIN',
+      'text-muted': user.role === 'SUPER_ADMIN'
+    }"></i>
                         </button>
+
+
+
                     </td>
 
                 </tr>
@@ -159,6 +176,200 @@
                         date:'medium') : 'Not provided' }}</p>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- ADD USER Modal -->
+<div class="modal fade right-modal" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slide modal-dialog-scrollable modal-fullscreen-md-down">
+        <div class="modal-content h-100">
+
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title">Create User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form (ngSubmit)="submitCreateUser()" #addUserForm="ngForm" novalidate>
+                <div class="modal-body px-4 overflow-auto" style="max-height: calc(100vh - 160px);">
+
+                    <!-- FIRST NAME -->
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-control" required name="firstName" [(ngModel)]="newUser.firstName"
+                        required #firstName="ngModel">
+
+                    <div *ngIf="firstName.invalid && firstName.touched" class="text-danger small mt-1">
+                        First name is required.
+                    </div>
+
+                    <!-- LAST NAME -->
+                    <label class="form-label mt-3">Last Name</label>
+                    <input type="text" class="form-control" name="lastName" required [(ngModel)]="newUser.lastName"
+                        #lastName="ngModel">
+
+                    <div *ngIf="lastName.invalid && lastName.touched" class="text-danger small mt-1">
+                        Last name is required.
+                    </div>
+
+
+                    <!-- EMAIL -->
+                    <label class="form-label mt-3">Email</label>
+                    <input type="email" class="form-control" name="email" required email [(ngModel)]="newUser.email"
+                        #emailField="ngModel">
+
+                    <div *ngIf="emailField.invalid && emailField.touched" class="text-danger small mt-1">
+                        <div *ngIf="emailField.errors?.['required']">Email is required.</div>
+                        <div *ngIf="emailField.errors?.['email']">Please enter a valid email address.</div>
+                    </div>
+
+
+                    <!-- PHONE -->
+                    <label class="form-label mt-3">Phone</label>
+                    <input type="text" class="form-control" name="phoneNumber" required
+                        [(ngModel)]="newUser.phoneNumber" #phoneField="ngModel">
+
+                    <div *ngIf="phoneField.invalid && phoneField.touched" class="text-danger small mt-1">
+                        Phone number is required.
+                    </div>
+
+                    <!-- ROLE -->
+                    <label class="form-label mt-3">Role</label>
+                    <select class="form-control" name="role" required [(ngModel)]="newUser.role" #roleField="ngModel">
+                        <option *ngFor="let role of availableRoles" [value]="role">
+                            {{ role.replace('_', ' ') | titlecase }}
+                        </option>
+                    </select>
+
+                    <div *ngIf="roleField.invalid && roleField.touched" class="text-danger small mt-1">
+                        Role is required.
+                    </div>
+
+
+
+                    <!-- IMAGE FILE -->
+                    <label class="form-label mt-3">Avatar (optional)</label>
+                    <input type="file" accept="image/*" class="form-control" (change)="handleFile($event, 'img')">
+                    <small class="text-muted d-block mt-1">Max file size: 5 MB</small>
+
+                    <!-- Avatar Preview -->
+                    <div *ngIf="avatarPreview" class="mt-3 text-center">
+                        <img [src]="avatarPreview" class="img-fluid rounded"
+                            style="max-width: 180px; max-height: 180px;" alt="Avatar Preview">
+                    </div>
+
+                    <!-- SIGNATURE FILE -->
+                    <label class="form-label mt-4">Signature (optional)</label>
+                    <input type="file" accept="image/*" class="form-control" (change)="handleFile($event, 'signature')">
+                    <small class="text-muted d-block mt-1">Max file size: 5 MB</small>
+
+                    <!-- Signature Preview -->
+                    <div *ngIf="signaturePreview" class="mt-3 text-center">
+                        <img [src]="signaturePreview" class="img-fluid rounded border"
+                            style="max-width: 300px; max-height: 150px;" alt="Signature Preview">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <app-button-loader text="Create User" type="submit" [loading]="isCreating" [fullWidth]="true"
+                        [disabled]="!!addUserForm.invalid">
+                    </app-button-loader>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- EDIT USER Modal -->
+<div class="modal fade right-modal" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slide modal-dialog-scrollable modal-fullscreen-md-down">
+        <div class="modal-content h-100">
+
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form (ngSubmit)="submitEditUser()" #editUserForm="ngForm" novalidate>
+                <div class="modal-body px-4 overflow-auto" style="max-height: calc(100vh - 160px);">
+
+                    <!-- FIRST NAME -->
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-control" required name="firstName" [(ngModel)]="newUser.firstName"
+                        #firstName="ngModel">
+                    <div *ngIf="firstName.invalid && firstName.touched" class="text-danger small mt-1">First name is
+                        required.</div>
+
+                    <!-- LAST NAME -->
+                    <label class="form-label mt-3">Last Name</label>
+                    <input type="text" class="form-control" name="lastName" required [(ngModel)]="newUser.lastName"
+                        #lastName="ngModel">
+                    <div *ngIf="lastName.invalid && lastName.touched" class="text-danger small mt-1">Last name is
+                        required.</div>
+
+                    <!-- EMAIL -->
+                    <label class="form-label mt-3">Email</label>
+                    <input type="email" class="form-control" name="email" required [(ngModel)]="newUser.email"
+                        #emailField="ngModel">
+                    <div *ngIf="emailField.invalid && emailField.touched" class="text-danger small mt-1">
+                        <div *ngIf="emailField.errors?.['required']">Email is required.</div>
+                        <div *ngIf="emailField.errors?.['email']">Please enter a valid email address.</div>
+                    </div>
+
+                    <!-- PHONE -->
+                    <label class="form-label mt-3">Phone</label>
+                    <input type="text" class="form-control" name="phoneNumber" required
+                        [(ngModel)]="newUser.phoneNumber" #phoneField="ngModel">
+                    <div *ngIf="phoneField.invalid && phoneField.touched" class="text-danger small mt-1">Phone number is
+                        required.</div>
+
+                    <!-- ROLE -->
+                    <label class="form-label mt-3">Role</label>
+                    <select class="form-control" name="role" required [(ngModel)]="newUser.role" #roleField="ngModel"
+                        [disabled]="newUser.role === 'SUPER_ADMIN'">
+                        <option *ngFor="let role of availableRoles" [value]="role">{{ role.replace('_', ' ') | titlecase
+                            }}</option>
+                    </select>
+                    <div *ngIf="roleField.invalid && roleField.touched" class="text-danger small mt-1">Role is required.
+                    </div>
+
+                    <label class="form-label mt-3">Update Password</label>
+                    <input type="password" class="form-control" name="password" [(ngModel)]="newUser.password"
+                        placeholder="Enter new password (optional)" #passwordField="ngModel">
+
+                    <div *ngIf="passwordField.invalid && passwordField.touched" class="text-danger small mt-1">
+                        Password must be at least 6 characters
+                    </div>
+                    <small class="text-muted d-block mt-1">Leave empty to keep current password.</small>
+                    <!-- IMAGE FILE -->
+                    <label class="form-label mt-3">Avatar (optional)</label>
+                    <input type="file" accept="image/*" class="form-control" (change)="handleFile($event, 'img')">
+                    <small class="text-muted d-block mt-1">Max file size: 5 MB</small>
+                    <div *ngIf="avatarPreview" class="mt-3 text-center">
+                        <img [src]="avatarPreview" class="img-fluid rounded"
+                            style="max-width: 180px; max-height: 180px;" alt="Avatar Preview">
+                    </div>
+
+                    <!-- SIGNATURE FILE -->
+                    <label class="form-label mt-4">Signature (optional)</label>
+                    <input type="file" accept="image/*" class="form-control" (change)="handleFile($event, 'signature')">
+                    <small class="text-muted d-block mt-1">Max file size: 5 MB</small>
+                    <div *ngIf="signaturePreview" class="mt-3 text-center">
+                        <img [src]="signaturePreview" class="img-fluid rounded border"
+                            style="max-width: 300px; max-height: 150px;" alt="Signature Preview">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <app-button-loader text="Update User" type="submit" [loading]="isEditing" [fullWidth]="true"
+                        [disabled]="!!editUserForm.invalid">
+                    </app-button-loader>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -150,6 +150,7 @@ export class ApiService {
 
         return this.get<PaginatedUsers>('/users', true, params);
     }
+
     createUser(userData: {
         firstName: string;
         lastName: string;
@@ -179,10 +180,38 @@ export class ApiService {
         }).pipe(catchError(this.handleError<any>('createUser')));
     }
 
-    //   getDashboardStats(params?: any): Observable<any> {
-    //     const url = `${this.baseUrl}/admin/dashboard/`;
-    //     return this.http
-    //       .get<any>(url, { headers: this.getHeaders(), params })
-    //       .pipe(catchError(this.handleError('getDashboardStats')));
-    //   }
+    editUser(userId: string, userData: {
+        firstName?: string;
+        lastName?: string;
+        email?: string;
+        phoneNumber?: string;
+        role?: string;
+        password?: string;
+        imgFile?: File;
+        signatureFile?: File;
+    }): Observable<any> {
+        const formData = new FormData();
+
+        // Dynamically append each property if it exists
+        Object.entries(userData).forEach(([key, value]) => {
+            if (value) {
+                if (value instanceof File) {
+                    formData.append(key, value);
+                } else {
+                    formData.append(key, value.toString());
+                }
+            }
+        });
+
+        return this.http.patch<any>(`${this.baseUrl}/auth/edit-user/${userId}`, formData, {
+            headers: this.getHeaders(true, false), // auth headers, no JSON since FormData
+        }).pipe(
+            catchError(this.handleError<any>('editUser'))
+        );
+    }
+
+
+    toggleUserStatus(userId: string): Observable<any> {
+        return this.patch<any>(`/auth/user/${userId}/toggle-status`);
+    }
 }
