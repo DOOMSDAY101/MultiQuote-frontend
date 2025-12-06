@@ -1,4 +1,9 @@
 <div class="full-width-header d-flex justify-content-center align-items-center">
+
+    <button class="hamburger-btn d-lg-none" (click)="toggleSidebar.emit()">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <h1 class="welcome-text text-white">
         <ng-container *ngIf="currentRouteName; else welcomeMessage">
             {{ currentRouteName }}

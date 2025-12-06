@@ -1,1 +1,217 @@
-<p>dashboard works!</p>
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h3 class="fw-bold mb-2 mb-md-0">Companies</h3>
+        <button class="btn btn-primary d-flex align-items-center"
+            style="background-color: #061023; border-color: #061023;" (click)="addCompany()">
+            <i class="fas fa-plus me-2"></i> Add Company
+        </button>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+
+    <div *ngIf="!loading && companies.length === 0" class="text-center py-5 text-muted">
+        <i class="fas fa-building fa-3x mb-3"></i>
+        <p class="mb-0">No companies found.</p>
+    </div>
+
+    <div class="row g-4" *ngIf="!loading && companies.length > 0">
+        <div class="col-12 col-md-6 col-lg-4" *ngFor="let company of companies">
+            <div class="card modern-card p-3 position-relative h-100">
+
+                <button class="edit-btn" (click)="openEditCompanyModal(company)" title="Edit Company">
+                    <i class="fas fa-edit"></i>
+                </button>
+
+                <div class="logo-container mb-3">
+                    <img *ngIf="company.logo" [src]="company.logo" class="company-logo" alt="Company Logo">
+                    <div *ngIf="!company.logo" class="placeholder-logo">
+                        <i class="fas fa-building fa-2x"></i>
+                    </div>
+                </div>
+
+                <h5 class="company-name text-center py-2 mb-3">{{ company.name }}</h5>
+
+                <div class="company-info text-center">
+                    <p class="mb-1"><strong>Email:</strong> {{ company.email || '—' }}</p>
+                    <p class="mb-1"><strong>Phone:</strong> {{ company.phoneNumber || '—' }}</p>
+                    <p class="mb-0"><strong>Address:</strong> {{ company.address || '—' }}</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap" *ngIf="!loading">
+        <div class="mb-2 mb-md-0">
+            Page {{ currentPage }} of {{ totalPages }}
+        </div>
+        <nav>
+            <ul class="pagination mb-0">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                    <button class="page-link" (click)="previousPage()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </li>
+
+                <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+                    [class.active]="currentPage === i + 1">
+                    <button class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</button>
+                </li>
+
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                    <button class="page-link" (click)="nextPage()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+
+
+
+<!-- Add Company Modal -->
+<div class="modal fade right-modal" id="addCompanyModal" tabindex="-1" aria-labelledby="addCompanyModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slide modal-dialog-scrollable modal-fullscreen-md-down">
+        <div class="modal-content h-100 d-flex flex-column">
+
+            <!-- Header -->
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title">Add Company</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body: scrollable -->
+            <div class="modal-body overflow-auto flex-grow-1 px-4">
+                <form (ngSubmit)="submitCreateCompany()" #addCompanyForm="ngForm" novalidate>
+
+                    <!-- Company Name -->
+                    <label class="form-label">Company Name</label>
+                    <input type="text" class="form-control" name="name" required [(ngModel)]="newCompany.name"
+                        #nameField="ngModel">
+                    <div *ngIf="nameField.invalid && nameField.touched" class="text-danger small mt-1">
+                        Company name is required.
+                    </div>
+
+                    <!-- Email -->
+                    <label class="form-label mt-3">Email</label>
+                    <input type="email" class="form-control" name="email" [(ngModel)]="newCompany.email"
+                        #emailField="ngModel">
+                    <div *ngIf="emailField.invalid && emailField.touched" class="text-danger small mt-1">
+                        Please enter a valid email address.
+                    </div>
+
+                    <!-- Phone -->
+                    <label class="form-label mt-3">Phone</label>
+                    <input type="text" class="form-control" name="phoneNumber" [(ngModel)]="newCompany.phoneNumber"
+                        #phoneField="ngModel">
+                    <div *ngIf="phoneField.invalid && phoneField.touched" class="text-danger small mt-1">
+                        Phone number is required.
+                    </div>
+
+                    <!-- Address -->
+                    <label class="form-label mt-3">Address</label>
+                    <textarea class="form-control" name="address" [(ngModel)]="newCompany.address" rows="3"></textarea>
+
+                    <!-- Logo -->
+                    <label class="form-label mt-3">Logo (optional)</label>
+                    <input type="file" accept="image/*" class="form-control" (change)="handleFile($event, 'logo')">
+                    <small class="text-muted d-block mt-1">Max file size: 5 MB</small>
+
+                    <!-- Logo Preview -->
+                    <div *ngIf="logoPreview" class="mt-3 text-center">
+                        <img [src]="logoPreview" class="img-fluid rounded" style="max-width: 180px; max-height: 180px;"
+                            alt="Logo Preview">
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="modal-footer border-top">
+                        <app-button-loader text="Add Company" type="submit" [loading]="isCreating" [fullWidth]="true"
+                            [disabled]="!!addCompanyForm.invalid">
+                        </app-button-loader>
+                    </div>
+
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Company Modal -->
+<div class="modal fade right-modal" id="editCompanyModal" tabindex="-1" aria-labelledby="editCompanyModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slide modal-dialog-scrollable modal-fullscreen-md-down">
+        <div class="modal-content d-flex flex-column h-100">
+
+            <!-- Header -->
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title">Edit Company</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body: scrollable -->
+            <div class="modal-body overflow-auto flex-grow-1 px-4">
+                <form (ngSubmit)="submitEditCompany()" #editCompanyForm="ngForm" *ngIf="selectedCompany" novalidate>
+
+                    <!-- Company Name -->
+                    <label class="form-label">Company Name</label>
+                    <input type="text" class="form-control" name="name" required [(ngModel)]="selectedCompany.name"
+                        #nameField="ngModel">
+                    <div *ngIf="nameField.invalid && nameField.touched" class="text-danger small mt-1">
+                        Company name is required.
+                    </div>
+
+                    <!-- Email -->
+                    <label class="form-label mt-3">Email</label>
+                    <input type="email" class="form-control" name="email" [(ngModel)]="selectedCompany.email"
+                        #emailField="ngModel">
+                    <div *ngIf="emailField.invalid && emailField.touched" class="text-danger small mt-1">
+                        Please enter a valid email address.
+                    </div>
+
+                    <!-- Phone -->
+                    <label class="form-label mt-3">Phone</label>
+                    <input type="text" class="form-control" name="phoneNumber" [(ngModel)]="selectedCompany.phoneNumber"
+                        #phoneField="ngModel">
+                    <div *ngIf="phoneField.invalid && phoneField.touched" class="text-danger small mt-1">
+                        Phone number is required.
+                    </div>
+
+                    <!-- Address -->
+                    <label class="form-label mt-3">Address</label>
+                    <textarea class="form-control" name="address" [(ngModel)]="selectedCompany.address"
+                        rows="3"></textarea>
+
+                    <!-- Logo -->
+                    <label class="form-label mt-3">Logo (optional)</label>
+                    <input type="file" accept="image/*" class="form-control" (change)="handleEditLogo($event)">
+                    <small class="text-muted d-block mt-1">Max file size: 5 MB</small>
+
+                    <!-- Logo Preview -->
+                    <div *ngIf="logoPreview" class="mt-3 text-center">
+                        <img [src]="logoPreview" class="img-fluid rounded" style="max-width: 180px; max-height: 180px;"
+                            alt="Logo Preview">
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Footer (outside form, fixed at bottom) -->
+            <!-- Footer -->
+            <div class="modal-footer border-top">
+                <app-button-loader text="Save Changes" type="button" [loading]="isUpdating" [fullWidth]="true"
+                    [disabled]="!selectedCompany || !selectedCompany.name" (click)="submitEditCompany()">
+                </app-button-loader>
+            </div>
+
+
+        </div>
+    </div>
+</div>

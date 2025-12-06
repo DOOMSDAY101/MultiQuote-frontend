@@ -1,14 +1,39 @@
 .full-width-header {
-  width: 100%;        
-  height: 70px;      
+  width: 100%;
+  height: 70px;
   background-color: #0A0A0A;
-  display: flex;        
-  justify-content: center; 
-  align-items: center;    
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .welcome-text {
-  font-size: 2rem;       
-  font-weight: 300;    
-  text-align: center;   
+  font-size: 2rem;
+  font-weight: 300;
+  text-align: center;
+}
+
+.hamburger-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: white;
+  /* change to white if placed on dark background */
+  cursor: pointer;
+  margin: 10px;
+  position: absolute;
+  left: 0;
+}
+
+@media (max-width: 991px) {
+  .full-width-header {
+    justify-content: flex-start;
+    /* align items to left */
+  }
+
+  .welcome-text {
+    margin: 0 0 0 3rem;
+    /* push text right so it's beside hamburger */
+    text-align: left;
+  }
 }

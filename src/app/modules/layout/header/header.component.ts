@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
@@ -10,6 +10,9 @@ import { filter } from 'rxjs';
   standalone: false,
 })
 export class HeaderComponent implements OnInit {
+
+  @Output() toggleSidebar = new EventEmitter<void>();
+
 
   userName: string | null = null;
   currentRouteName: string = '';
@@ -27,23 +30,25 @@ export class HeaderComponent implements OnInit {
     const currentUser = admin || user;
 
     this.userName = currentUser?.firstName || null;
+    this.setRouteName(this.router.url);
 
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      const route = this.router.url.replace('/', '');
-
-      // if it's dashboard → show generic
-      if (route === '' || route === 'dashboard') {
-        this.currentRouteName = '';
-      } else {
-        // convert route to readable name
-        this.currentRouteName = this.formatRouteName(route);
-      }
-    });
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.setRouteName(event.urlAfterRedirects);
+      });
   }
 
 
+  private setRouteName(url: string) {
+    const route = url.replace('/', '');
+
+    if (route === '' || route === 'dashboard') {
+      this.currentRouteName = '';
+    } else {
+      this.currentRouteName = this.formatRouteName(route);
+    }
+  }
   private formatRouteName(route: string): string {
     return route
       .replace('-', ' ')       // convert hyphens into spaces

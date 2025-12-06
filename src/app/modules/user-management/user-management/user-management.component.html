@@ -1,7 +1,7 @@
-<div class="container-fluid py-3">
+<div class="container-fluid mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-3 header-row">
-        <h2>User Management</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h3 class="fw-bold mb-2 mb-md-0">User Management</h3>
 
         <button class="btn btn-primary" style="background-color: #061023; border-color: #061023;" (click)="addUser()">
             <i class="fas fa-plus me-2"></i> Add User
@@ -15,7 +15,7 @@
     </div>
 
     <!-- User table -->
-    <div class="table-responsive mobile-scroll-wrapper">
+    <div class="table-responsive">
 
         <table class="table table-hover align-middle">
             <thead class="table-light">
@@ -43,7 +43,7 @@
                 </ng-container>
 
                 <tr *ngFor="let user of paginatedUsers">
-                    <td data-label="Profile Picture">
+                    <td data-label="Profile Picture: ">
                         <img [src]="user.img || 'https://via.placeholder.com/40'" class="rounded-circle" width="40"
                             height="40" alt="avatar" />
                     </td>

@@ -36,10 +36,10 @@ const routes: Routes = [
             },
         ]
     },
-    // {
-    //     path: '**',
-    //     redirectTo: 'login',
-    // },
+    {
+        path: '**',
+        redirectTo: '/dashboard',
+    },
 ];
 
 @NgModule({

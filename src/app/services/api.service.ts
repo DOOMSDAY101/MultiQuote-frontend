@@ -210,8 +210,88 @@ export class ApiService {
         );
     }
 
-
     toggleUserStatus(userId: string): Observable<any> {
         return this.patch<any>(`/auth/user/${userId}/toggle-status`);
+    }
+
+
+    createCompany(data: {
+        name: string;
+        email?: string;
+        phoneNumber?: string;
+        address?: string;
+        logoFile?: File;
+    }): Observable<any> {
+
+        const formData = new FormData();
+
+        Object.entries(data).forEach(([key, value]) => {
+            if (value) {
+                if (value instanceof File) {
+                    formData.append('logo', value);   // backend uses req.file
+                } else {
+                    formData.append(key, value.toString());
+                }
+            }
+        });
+
+        return this.http.post<any>(
+            `${this.baseUrl}/company`,
+            formData,
+            { headers: this.getHeaders(true, false) }  // auth but NO JSON headers
+        ).pipe(
+            catchError(this.handleError<any>('createCompany'))
+        );
+    }
+
+
+
+    updateCompany(
+        companyId: string,
+        data: {
+            name?: string;
+            email?: string;
+            phoneNumber?: string;
+            address?: string;
+            logoFile?: File;
+        }
+    ): Observable<any> {
+
+        const formData = new FormData();
+
+        Object.entries(data).forEach(([key, value]) => {
+            if (value) {
+                if (value instanceof File) {
+                    formData.append('logo', value);     // backend expects req.file
+                } else {
+                    formData.append(key, value.toString());
+                }
+            }
+        });
+
+        return this.http.put<any>(
+            `${this.baseUrl}/company/${companyId}`,
+            formData,
+            { headers: this.getHeaders(true, false) }
+        ).pipe(
+            catchError(this.handleError<any>('updateCompany'))
+        );
+    }
+
+
+
+    getCompanies(
+        page: number = 1,
+        limit: number = 10,
+        search?: string,
+    ): Observable<any> {
+
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('limit', limit.toString());
+
+        if (search) params = params.set('search', search);
+
+        return this.get<any>('/company', true, params);
     }
 }

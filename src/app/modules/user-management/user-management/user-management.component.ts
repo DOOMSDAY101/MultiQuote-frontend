@@ -67,7 +67,7 @@ export class UserManagementComponent implements OnInit {
         this.totalPages = res.pagination.totalPages;
 
         if (res.users.length === 0) {
-          this.toastr.info('No users found', 'Info');
+          console.warn('No users found');
         }
 
         this.updatePagination();
