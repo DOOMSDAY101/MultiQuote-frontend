@@ -59,6 +59,7 @@ export class DashboardComponent implements OnInit {
 
 
   addCompany() {
+    this.logoPreview = null
     const modalEl = document.getElementById('addCompanyModal');
     if (modalEl) {
       const modal = new Modal(modalEl);
