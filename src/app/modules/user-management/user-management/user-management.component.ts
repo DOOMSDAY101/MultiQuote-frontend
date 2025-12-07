@@ -166,6 +166,17 @@ export class UserManagementComponent implements OnInit {
 
 
   addUser() {
+    this.newUser = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
+      role: UserRole.USER,
+      img: null,
+      signature: null,
+    };
+    this.avatarPreview = null;
+    this.signaturePreview = null;
     const modalEl = document.getElementById('addUserModal');
     if (modalEl) {
       const modal = new Modal(modalEl);
